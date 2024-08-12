@@ -1,36 +1,46 @@
 import React, { useState } from 'react';
-import {useNavigate} from 'react-router-dom'
+import { useNavigate } from 'react-router-dom';
 import axios from 'axios';
-import DashboardHome from './DashboardHome';
+import Navbar from './Navbar';
+
 const Logintab = () => {
     const [username, setUsername] = useState('');
     const [password, setPassword] = useState('');
     const [error, setError] = useState('');
-    const navigate = useNavigate()
+    const [loading, setLoading] = useState(false);
+    const navigate = useNavigate();
 
     const handleSubmit = async (event) => {
         event.preventDefault();
+        setLoading(true);
+        setError('');
         try {
-            const response = await axios.post('http://localhost:3000/login', {
+            const response = await axios.post(`http://localhost:3000/login`, {
                 username: username,
                 password: password
             });
-            if(response.status==200)
-            {
-                localStorage.setItem('token',response.data.token)
-                navigate("/dashboard")
+            if (response.status === 200) {
+                localStorage.setItem("token",response.data.token)
+                navigate('/dashboard');
             }
-            } catch (err) {
-            console.error('Error logging in:', err);
-            setError(err);
+        } catch (err) {
+            console.log(err)
+            if (err.response && err.response.status === 401) {
+                setError('Incorrect Credentials');
+            } else {
+                setError('Unexpected error');
+            }
+        } finally {
+            setLoading(false);
         }
     };
-
     return (
+        <>
+        <Navbar/>
         <form onSubmit={handleSubmit}>
             <div className="flex items-center h-screen justify-center">
                 <div className="border-2 p-20 rounded-md shadow-md">
-                    <div className="pb-10">
+                    <div className="pb-10 text-center">
                         <h1 className="font-bold text-3xl">Login</h1>
                     </div>
                     <div className="p-2 text-left ml-2"><p>Username</p></div>
@@ -53,19 +63,20 @@ const Logintab = () => {
                             value={password}
                         />
                     </div>
-                    <div className="m-2 mt-4">
-                        <button type="submit" className="bg-black rounded-md p-2 text-white pl-4 pr-4">
-                            Login
+                    <div className="m-2 mt-6 flex justify-center ">
+                        <button type="submit" className="bg-black rounded-md p-2 text-white pl-4 pr-4" disabled={loading}>
+                            {loading ? 'Signin in...' : 'Signin'}
                         </button>
                     </div>
                     {error && (
-                        <div className="text-red-500">
+                        <div className="text-red-500 mt-2 flex justify-center ">
                             <p>{error}</p>
                         </div>
                     )}
                 </div>
             </div>
         </form>
+        </>
     );
 };
 

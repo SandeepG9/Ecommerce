@@ -1,6 +1,6 @@
 import React, { useState } from 'react';
 import axios from 'axios';
-
+import Navbar from './Navbar';
 const Signup = () => {
   const [username, setUsername] = useState('');
   const [password, setPassword] = useState('');
@@ -35,10 +35,11 @@ const Signup = () => {
 
   return (
     <>
+    <Navbar></Navbar>
     <form onSubmit={handleSubmit}>
       <div className="flex items-center h-screen justify-center">
         <div className="border-2 p-15 pt-6 pb-6 pr-20 pl-20 rounded-md shadow-md">
-          <div className="pb-10">
+          <div className="pb-10 text-center">
             <h1 className="font-bold text-3xl">Signup</h1>
           </div>
           <div className="p-2 text-left ml-2 font-medium">
@@ -89,18 +90,18 @@ const Signup = () => {
               value={lastname}
             />
           </div>
-          <div className="m-2 mt-4">
+          <div className="m-2 mt-4 flex justify-center">
             <button type="submit" className="bg-black rounded-md p-2 text-white pl-4 pr-4">
               Signup
             </button> 
           </div>
           {error && (
-            <div className="text-red-500 h-6">
+            <div className="text-red-500 h-6 flex justify-center">
               <p>{error}</p>
             </div>
           )}
           {success && (
-            <div className="text-green-500 h-6">
+            <div className="text-green-500 h-6 flex justify-center">
               <p>{success}</p>
             </div>
           )}
